@@ -1,0 +1,233 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Formik } from "formik";
+import { toPng } from "html-to-image";
+import { useEffect, useRef, useState } from "react";
+import { Button, Card, Form } from "react-bootstrap";
+import QRCode from "react-qr-code";
+import * as yup from "yup";
+import { uploadToImgBB } from "../../utils/uploadImage";
+
+const NewList = () => {
+  const [qrCodeValue, setQrCodeValue] = useState<string | undefined>();
+  const [formValue, setFormValue] = useState<
+    | {
+        id: number;
+        objectName: string;
+        objectType: string;
+        objectCustomType: string;
+        objectImage: File | null;
+        objectImageUrl: string;
+      }[]
+    | undefined
+  >();
+
+  console.log("FORMIK FORM VALUES", formValue);
+
+  const qrRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = () => {
+    if (qrRef.current === null) return;
+
+    toPng(qrRef.current)
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = "qr-code.png";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.error("Errore durante il download:", err);
+      });
+  };
+
+  const deleteObject = (id: number) => {
+    const newFormValue = formValue?.filter((i) => i.id !== id);
+    if (newFormValue === undefined || newFormValue.length === 0) {
+      setFormValue(undefined);
+      return;
+    }
+    setFormValue(newFormValue);
+  };
+
+  useEffect(() => {
+    if (formValue) {
+      const qrCodeData = formValue.map((item) => {
+        return {
+          objectName: item.objectName,
+          objectType: item.objectType,
+          objectCustomType: item.objectCustomType,
+          objectImageUrl: item.objectImageUrl,
+        };
+      });
+      const objectToString = JSON.stringify(qrCodeData);
+      const objectToBase64 = btoa(objectToString);
+      const urlList =
+        import.meta.env.VITE_BASE_URL + "#/list/" + objectToBase64;
+      setQrCodeValue(urlList);
+      console.log("FORMIK QR CODE VALUE URL", urlList);
+    } else {
+      setQrCodeValue(undefined);
+    }
+  }, [formValue]);
+
+  return (
+    <div className="organizer">
+      <Formik
+        initialValues={{
+          objectName: "",
+          objectType: "",
+          objectCustomType: "",
+          objectImage: null as File | null,
+          objectImageUrl: "",
+        }}
+        onSubmit={async (values, action) => {
+          console.log("FORMIK VALUES", values);
+          const imageUrl = await uploadToImgBB(values.objectImage);
+
+          if (formValue) {
+            const newValues = formValue.map((i, index) => ({
+              ...i,
+              id: index + 1,
+            }));
+            setFormValue([
+              ...newValues,
+              {
+                ...values,
+                id: newValues.length + 1,
+                objectImage: null,
+                objectImageUrl: imageUrl,
+              },
+            ]);
+          } else {
+            setFormValue([
+              {
+                ...values,
+                id: 1,
+                objectImage: null,
+                objectImageUrl: imageUrl,
+              },
+            ]);
+          }
+          action.resetForm();
+        }}
+        validationSchema={yup.object().shape({
+          objectName: yup.string().required("Nome obbligatorio"),
+          objectType: yup.string().required("Tipologia obbligatoria"),
+          objectCustomType: yup.string().when("objectType", {
+            is: "other",
+            then(schema) {
+              return schema.required("Tipologia obbligatoria");
+            },
+          }),
+          objectImage: yup.mixed<File>().nullable(),
+          objectImageUrl: yup.string().url("URL non valido"),
+        })}
+      >
+        {({ handleSubmit, handleChange, values, touched, errors }) => (
+          <Form noValidate onSubmit={handleSubmit} className="form">
+            <Form.Group controlId="objectName">
+              <Form.Label>Nome oggetto*</Form.Label>
+              <Form.Control
+                type="text"
+                name="objectName"
+                value={values.objectName}
+                onChange={handleChange}
+                isValid={touched.objectName && !errors.objectName}
+                isInvalid={touched.objectName && !!errors.objectName}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.objectName}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group controlId="objectType">
+              <Form.Label>Tipologia oggetto*</Form.Label>
+              <Form.Select
+                name="objectType"
+                aria-label="Default select example"
+                value={values.objectType}
+                onChange={handleChange}
+                isInvalid={touched.objectType && !!errors.objectType}
+              >
+                <option value="">Seleziona una tipologia</option>
+                <option value="dress">Vestiti</option>
+                <option value="game">Giochi</option>
+                <option value="hardware">Ferramenta</option>
+                <option value="other">Altro...</option>
+              </Form.Select>
+              {values.objectType === "other" && (
+                <Form.Control
+                  type="text"
+                  value={values.objectCustomType}
+                  onChange={handleChange}
+                  isInvalid={
+                    touched.objectCustomType && !!errors.objectCustomType
+                  }
+                  name="objectCustomType"
+                  placeholder="Inserisci una tipologia"
+                />
+              )}
+              <Form.Control.Feedback type="invalid">
+                {errors.objectCustomType || errors.objectType}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group controlId="objectImage">
+              <Form.Label>Immagine oggetto</Form.Label>
+              <Form.Control
+                type="file"
+                name="objectImage"
+                accept="image/*"
+                onChange={(e) => {
+                  const selected = (e.target as HTMLInputElement).files?.[0];
+                  if (selected) {
+                    values.objectImage = selected;
+                  }
+                }}
+              />
+            </Form.Group>
+            <Button type="submit">Aggiungi oggetto</Button>
+          </Form>
+        )}
+      </Formik>
+
+      <div className="cardContainer">
+        {formValue &&
+          formValue.map((item, index) => (
+            <>
+              <Card key={index} style={{ width: "18rem" }}>
+                <Card.Img
+                  variant="top"
+                  src={item.objectImageUrl}
+                  alt={item.objectName}
+                />
+                <Card.Body className="cardText">
+                  <Button
+                    variant="danger"
+                    className="cardButton"
+                    onClick={() => deleteObject(item.id)}
+                  >
+                    X
+                  </Button>
+                  <Card.Title>{item.objectName}</Card.Title>
+                  <Card.Text>
+                    {item.objectType === "other"
+                      ? item.objectCustomType
+                      : item.objectType}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </>
+          ))}
+      </div>
+
+      {qrCodeValue && (
+        <>
+          <div ref={qrRef} style={{ background: "white", padding: "16px" }}>
+            <QRCode value={qrCodeValue} />
+          </div>
+          <button onClick={handleDownload}>Scarica QR Code</button>
+        </>
+      )}
+    </div>
+  );
+};
+export default NewList;
