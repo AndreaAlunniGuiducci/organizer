@@ -6,6 +6,7 @@ import { Button, Card, Form } from "react-bootstrap";
 import QRCode from "react-qr-code";
 import * as yup from "yup";
 import { uploadToImgBB } from "../../utils/uploadImage";
+import styles from "./newList.module.scss";
 
 const NewList = () => {
   const [qrCodeValue, setQrCodeValue] = useState<string | undefined>();
@@ -20,8 +21,6 @@ const NewList = () => {
       }[]
     | undefined
   >();
-
-  console.log("FORMIK FORM VALUES", formValue);
 
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -64,14 +63,13 @@ const NewList = () => {
       const urlList =
         import.meta.env.VITE_BASE_URL + "#/list/" + objectToBase64;
       setQrCodeValue(urlList);
-      console.log("FORMIK QR CODE VALUE URL", urlList);
     } else {
       setQrCodeValue(undefined);
     }
   }, [formValue]);
 
   return (
-    <div className="organizer">
+    <div className={styles.newList}>
       <Formik
         initialValues={{
           objectName: "",
@@ -81,7 +79,6 @@ const NewList = () => {
           objectImageUrl: "",
         }}
         onSubmit={async (values, action) => {
-          console.log("FORMIK VALUES", values);
           const imageUrl = await uploadToImgBB(values.objectImage);
 
           if (formValue) {
@@ -221,10 +218,11 @@ const NewList = () => {
 
       {qrCodeValue && (
         <>
-          <div ref={qrRef} style={{ background: "white", padding: "16px" }}>
+          <div ref={qrRef} className={styles.qrCodeContainer}>
             <QRCode value={qrCodeValue} />
+            <h3 className={styles.listName}>nome listanome listanome lista</h3>
           </div>
-          <button onClick={handleDownload}>Scarica QR Code</button>
+          <Button onClick={handleDownload}>Scarica QR Code</Button>
         </>
       )}
     </div>

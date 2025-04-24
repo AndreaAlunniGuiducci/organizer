@@ -16,8 +16,6 @@ const List = () => {
     }
   }, [qrCode]);
 
-  console.log("FORMIK QR CODE VALUE", qrCodeValue);
-
   return (
     <div>
       {qrCodeValue?.map((i) => (
