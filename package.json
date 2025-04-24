@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://andreaalunniguiducci.github.io/organizer/",
   "scripts": {
+    "deploy": "gh-pages -d dist",
     "dev": "vite --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -13,6 +15,7 @@
     "bootstrap": "^5.3.5",
     "firebase": "^11.6.0",
     "formik": "^2.4.6",
+    "gh-pages": "^6.3.0",
     "html-to-image": "^1.11.13",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
