@@ -1,5 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button } from "react-bootstrap";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { Button, InputGroup } from "react-bootstrap";
 import {
   Link,
   Outlet,
@@ -9,6 +13,9 @@ import {
 import "./App.css";
 import List from "./pages/list/list";
 import NewList from "./pages/newList/newList";
+import { auth } from "./utils/firebase/firebase";
+import Home from "./pages/home/home";
+import { routes } from "./utils/routes";
 
 function App() {
   // da usare se non si utilizza formik
@@ -36,20 +43,14 @@ function App() {
       children: [
         {
           path: "/",
-          element: (
-            <div>
-              <Link to="/nuova_lista">
-                <Button variant="primary">Crea una nuova lista</Button>
-              </Link>
-            </div>
-          ),
+          element: <Home />,
         },
         {
-          path: "/nuova_lista",
+          path: routes.newList,
           element: <NewList />,
         },
         {
-          path: "/list/:qrCode",
+          path: routes.list,
           element: <List />,
         },
       ],
