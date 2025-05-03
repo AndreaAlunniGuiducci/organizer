@@ -1,21 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { Button, InputGroup } from "react-bootstrap";
-import {
-  Link,
-  Outlet,
-  RouterProvider,
-  createHashRouter,
-} from "react-router-dom";
+import { Outlet, RouterProvider, createHashRouter } from "react-router-dom";
 import "./App.css";
+import Home from "./pages/home/home";
 import List from "./pages/list/list";
 import NewList from "./pages/newList/newList";
-import { auth } from "./utils/firebase/firebase";
-import Home from "./pages/home/home";
 import { routes } from "./utils/routes";
+import Header from "./components/molecules/header/header";
 
 function App() {
   // da usare se non si utilizza formik
@@ -36,8 +26,10 @@ function App() {
       path: "/",
       element: (
         <div>
-          {/* <Header /> */}
-          <Outlet />
+          <Header />
+          <div className="page_container">
+            <Outlet />
+          </div>
         </div>
       ),
       children: [

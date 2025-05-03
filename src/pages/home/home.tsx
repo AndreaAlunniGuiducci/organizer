@@ -1,6 +1,8 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateCurrentUser,
+  updateProfile,
 } from "firebase/auth";
 import { Button } from "react-bootstrap";
 import { auth } from "../../utils/firebase/firebase";
@@ -86,13 +88,12 @@ const Home = () => {
                     // Signed in
                     const user = userCredential.user;
                     console.log("User signed in", user);
-                    window.localStorage.setItem("user", user.uid);
+                    window.localStorage.setItem("user", JSON.stringify(user));
                     navigate(routes.newList);
                     // ...
                   })
                   .catch((error) => {
                     const errorCode = error.code;
-                    const errorMessage = error.message;
                     if (errorCode.includes("auth/invalid-credential")) {
                       window.alert("Email o password non validi");
                     }
@@ -116,17 +117,26 @@ const Home = () => {
                   userCredentials.user_email,
                   userCredentials.user_password
                 )
-                  .then((userCredential) => {
+                  .then(async (userCredential) => {
                     console.log("User created", userCredential);
+                    console.log("CURRENT USER", auth.currentUser);
                     // Signed up
                     const user = userCredential.user;
-                    window.localStorage.setItem("user", user.uid);
+                    const currentUser = auth.currentUser;
+                    const displayName =
+                      userCredentials.user_email.split("@")[0];
+                    console.log("Display name", displayName);
+                    if (currentUser) {
+                      await updateProfile(auth.currentUser!, {
+                        displayName,
+                      }).then(() => {});
+                    }
+                    window.localStorage.setItem("user", JSON.stringify(user));
                     navigate(routes.newList);
                     // ...
                   })
                   .catch((error) => {
                     const errorCode = error.code;
-                    const errorMessage = error.message;
                     if (errorCode.includes("auth/email-already-in-use")) {
                       window.alert("Email già in uso");
                     }
