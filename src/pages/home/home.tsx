@@ -1,16 +1,14 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  updateCurrentUser,
   updateProfile,
 } from "firebase/auth";
-import { Button } from "react-bootstrap";
-import { auth } from "../../utils/firebase/firebase";
 import { Formik } from "formik";
-import { Form } from "react-bootstrap";
-import * as yup from "yup";
 import { useState } from "react";
+import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import { auth } from "../../utils/firebase/firebase";
 import { routes } from "../../utils/routes";
 const Home = () => {
   const navigate = useNavigate();

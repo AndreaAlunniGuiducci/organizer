@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { isUserLoggedIn } from "../../../utils/user";
 import styles from "./header.module.scss";
 
 const Header = () => {
