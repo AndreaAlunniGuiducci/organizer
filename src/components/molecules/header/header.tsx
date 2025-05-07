@@ -7,8 +7,6 @@ const Header = () => {
   useEffect(() => {
     if (window) {
       const localUser = localStorage.getItem("user");
-      console.log("localUser", localUser);
-      console.log("parsedUser", JSON.parse(localUser ?? "{}"));
       if (localUser) {
         setUser(JSON.parse(localUser));
       } else {
@@ -22,7 +20,7 @@ const Header = () => {
         <div className={styles.logo}>
           <img
             className={styles.logo}
-            src="src/assets/organizer.png"
+            src="/organizer.png"
             alt="Logo"
           />
         </div>

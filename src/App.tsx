@@ -6,6 +6,7 @@ import List from "./pages/list/list";
 import NewList from "./pages/newList/newList";
 import { routes } from "./utils/routes";
 import Header from "./components/molecules/header/header";
+import BoxName from "./pages/nameList/boxName";
 
 function App() {
   // da usare se non si utilizza formik
@@ -36,6 +37,10 @@ function App() {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: routes.nameList,
+          element: <BoxName />,
         },
         {
           path: routes.newList,

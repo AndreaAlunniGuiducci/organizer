@@ -1,4 +1,5 @@
 export const routes = {
-  newList: "/nuova_lista",
+  nameList: "/nuova_lista",
+  newList: "/nuova_lista/aggiungi_oggetto",
   list: "/list/:qrCode",
 };

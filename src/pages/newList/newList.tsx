@@ -7,20 +7,13 @@ import QRCode from "react-qr-code";
 import * as yup from "yup";
 import { uploadToImgBB } from "../../utils/uploadImage";
 import styles from "./newList.module.scss";
+import { useLocation } from "react-router-dom";
 
 const NewList = () => {
+  const location = useLocation();
+  const { boxName } = location.state as { boxName: string };
   const [qrCodeValue, setQrCodeValue] = useState<string | undefined>();
-  const [formValue, setFormValue] = useState<
-    | {
-        id: number;
-        objectName: string;
-        objectType: string;
-        objectCustomType: string;
-        objectImage: File | null;
-        objectImageUrl: string;
-      }[]
-    | undefined
-  >();
+  const [formValue, setFormValue] = useState<BoxContent[] | undefined>();
 
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -220,7 +213,7 @@ const NewList = () => {
         <>
           <div ref={qrRef} className={styles.qrCodeContainer}>
             <QRCode value={qrCodeValue} />
-            <h3 className={styles.listName}>nome listanome listanome lista</h3>
+            <h3 className={styles.listName}>{boxName}</h3>
           </div>
           <Button onClick={handleDownload}>Scarica QR Code</Button>
         </>

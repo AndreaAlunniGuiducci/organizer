@@ -12,10 +12,6 @@ import { auth } from "../../utils/firebase/firebase";
 import { routes } from "../../utils/routes";
 const Home = () => {
   const navigate = useNavigate();
-  const [userCredentials, setUserCredentials] = useState<{
-    user_email: string;
-    user_password: string;
-  } | null>(null);
 
   return (
     <div>
@@ -24,8 +20,7 @@ const Home = () => {
           user_email: "",
           user_password: "",
         }}
-        onSubmit={async (values, action) => {
-          setUserCredentials(values);
+        onSubmit={async (_, action) => {
           action.resetForm();
         }}
         validationSchema={yup.object().shape({
@@ -72,22 +67,21 @@ const Home = () => {
               type="submit"
               onClick={() => {
                 if (
-                  !userCredentials ||
-                  userCredentials.user_email.trim() === "" ||
-                  userCredentials.user_password.trim() === ""
+                  !values ||
+                  values.user_email.trim() === "" ||
+                  values.user_password.trim() === ""
                 )
                   return;
                 signInWithEmailAndPassword(
                   auth,
-                  userCredentials.user_email,
-                  userCredentials.user_password
+                  values.user_email,
+                  values.user_password
                 )
                   .then((userCredential) => {
                     // Signed in
                     const user = userCredential.user;
-                    console.log("User signed in", user);
                     window.localStorage.setItem("user", JSON.stringify(user));
-                    navigate(routes.newList);
+                    navigate(routes.nameList);
                     // ...
                   })
                   .catch((error) => {
@@ -105,32 +99,29 @@ const Home = () => {
               type="submit"
               onClick={() => {
                 if (
-                  !userCredentials ||
-                  userCredentials.user_email.trim() === "" ||
-                  userCredentials.user_password.trim() === ""
+                  !values ||
+                  values.user_email.trim() === "" ||
+                  values.user_password.trim() === ""
                 )
                   return;
                 createUserWithEmailAndPassword(
                   auth,
-                  userCredentials.user_email,
-                  userCredentials.user_password
+                  values.user_email,
+                  values.user_password
                 )
                   .then(async (userCredential) => {
-                    console.log("User created", userCredential);
-                    console.log("CURRENT USER", auth.currentUser);
                     // Signed up
                     const user = userCredential.user;
                     const currentUser = auth.currentUser;
                     const displayName =
-                      userCredentials.user_email.split("@")[0];
-                    console.log("Display name", displayName);
+                      values.user_email.split("@")[0];
                     if (currentUser) {
                       await updateProfile(auth.currentUser!, {
                         displayName,
                       }).then(() => {});
                     }
                     window.localStorage.setItem("user", JSON.stringify(user));
-                    navigate(routes.newList);
+                    navigate(routes.nameList);
                     // ...
                   })
                   .catch((error) => {
