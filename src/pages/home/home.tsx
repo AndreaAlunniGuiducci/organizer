@@ -4,7 +4,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -12,6 +12,12 @@ import { auth } from "../../utils/firebase/firebase";
 import { routes } from "../../utils/routes";
 const Home = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    const user = window.localStorage.getItem("user");
+    if (user) {
+      navigate(routes.dashboard);
+    }
+  }, []);
 
   return (
     <div>
@@ -81,7 +87,7 @@ const Home = () => {
                     // Signed in
                     const user = userCredential.user;
                     window.localStorage.setItem("user", JSON.stringify(user));
-                    navigate(routes.nameList);
+                    navigate(routes.dashboard);
                     // ...
                   })
                   .catch((error) => {
@@ -113,15 +119,14 @@ const Home = () => {
                     // Signed up
                     const user = userCredential.user;
                     const currentUser = auth.currentUser;
-                    const displayName =
-                      values.user_email.split("@")[0];
+                    const displayName = values.user_email.split("@")[0];
                     if (currentUser) {
                       await updateProfile(auth.currentUser!, {
                         displayName,
                       }).then(() => {});
                     }
                     window.localStorage.setItem("user", JSON.stringify(user));
-                    navigate(routes.nameList);
+                    navigate(routes.dashboard);
                     // ...
                   })
                   .catch((error) => {

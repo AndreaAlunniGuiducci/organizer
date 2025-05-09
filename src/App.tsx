@@ -7,20 +7,11 @@ import NewList from "./pages/newList/newList";
 import { routes } from "./utils/routes";
 import Header from "./components/molecules/header/header";
 import BoxName from "./pages/nameList/boxName";
+import Dashboard from "./pages/dashboard/dashboard";
+import ProtectedRoute from "./components/molecules/protectedRoute/protectedRoute";
 
 function App() {
-  // da usare se non si utilizza formik
-  // const [validated, setValidated] = useState(false);
-  // const handleSubmit = (event: any) => {
-  //   const form = event.currentTarget;
-  //   if (form.checkValidity() === false) {
-  //     event.preventDefault();
-  //     event.stopPropagation();
-  //   }
-  //   event.preventDefault();
-
-  //   setValidated(true);
-  // };
+  const isLoggedIn = window.localStorage.getItem("user") !== null;
 
   const router = createHashRouter([
     {
@@ -39,16 +30,36 @@ function App() {
           element: <Home />,
         },
         {
+          path: routes.dashboard,
+          element: (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <Dashboard />
+            </ProtectedRoute>
+          ),
+        },
+        {
           path: routes.nameList,
-          element: <BoxName />,
+          element: (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <BoxName />
+            </ProtectedRoute>
+          ),
         },
         {
           path: routes.newList,
-          element: <NewList />,
+          element: (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <NewList />
+            </ProtectedRoute>
+          ),
         },
         {
           path: routes.list,
-          element: <List />,
+          element: (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <List />
+            </ProtectedRoute>
+          ),
         },
       ],
     },
