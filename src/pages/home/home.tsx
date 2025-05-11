@@ -13,11 +13,14 @@ import { routes } from "../../utils/routes";
 const Home = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const user = window.localStorage.getItem("user");
-    if (user) {
+    const user = localStorage.getItem("user");
+    const parsedUser = JSON.parse(user || "[]");
+    const userId = parsedUser?.uid;
+    if (userId) {
+      console.log("User already logged in");
       navigate(routes.dashboard);
     }
-  }, []);
+  }, [localStorage.getItem("user")]);
 
   return (
     <div>
@@ -99,7 +102,7 @@ const Home = () => {
                   });
               }}
             >
-              LOGIN
+              Accedi
             </Button>
             <Button
               type="submit"
@@ -139,7 +142,7 @@ const Home = () => {
                   });
               }}
             >
-              SIGNIN
+              Registrati
             </Button>
           </Form>
         )}

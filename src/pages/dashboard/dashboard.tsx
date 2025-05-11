@@ -7,7 +7,16 @@ import styles from "./dashboard.module.scss";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [place, setPlace] = useState<string>("");
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    const parsedUser = JSON.parse(user || "[]");
+    const userId = parsedUser?.uid;
+    if (!userId) {
+      console.log("User not logged in");
+      navigate('/');
+    }
+  }, []);
+
   return (
     <div className={styles.dashboard}>
       <h1>Dashboard</h1>

@@ -16,12 +16,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const user = window.localStorage.getItem("user");
-    if (user) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
+    setIsLoggedIn(!!user);
+  }, [localStorage.getItem("user")]);
+
   const router = createHashRouter([
     {
       path: "/",
@@ -41,9 +38,9 @@ function App() {
         {
           path: routes.dashboard,
           element: (
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
-              <Dashboard />
-            </ProtectedRoute>
+            // <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <Dashboard />
+            // </ProtectedRoute>
           ),
         },
         {
@@ -65,9 +62,9 @@ function App() {
         {
           path: routes.qrList,
           element: (
-            <ProtectedRoute isLoggedIn={isLoggedIn}>
-              <QrList />
-            </ProtectedRoute>
+            // <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <QrList />
+            // </ProtectedRoute>
           ),
         },
         {

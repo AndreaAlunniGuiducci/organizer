@@ -7,6 +7,7 @@ const ProtectedRoute = ({
   isLoggedIn: boolean;
   children: React.ReactNode;
 }) => {
+  console.log("isLoggedIn", isLoggedIn);
   if (!isLoggedIn) {
     return <Navigate to="/" replace />;
   }

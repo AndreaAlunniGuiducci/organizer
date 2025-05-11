@@ -13,7 +13,7 @@ const Header = () => {
         setUser(null);
       }
     }
-  }, [window]);
+  }, [localStorage.getItem("user")]);
   return (
     <div className={styles.header}>
       <div className={styles.leftPart}>
