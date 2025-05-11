@@ -4,7 +4,6 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { Formik } from "formik";
-import { useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -12,15 +11,6 @@ import { auth } from "../../utils/firebase/firebase";
 import { routes } from "../../utils/routes";
 const Home = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    const parsedUser = JSON.parse(user || "[]");
-    const userId = parsedUser?.uid;
-    if (userId) {
-      console.log("User already logged in");
-      navigate(routes.dashboard);
-    }
-  }, [localStorage.getItem("user")]);
 
   return (
     <div>
