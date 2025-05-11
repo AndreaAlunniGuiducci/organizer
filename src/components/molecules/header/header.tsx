@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import { XCircle } from "react-bootstrap-icons";
 import styles from "./header.module.scss";
-import { X, XCircle } from "react-bootstrap-icons";
 const Header = () => {
   const [user, setUser] = useState<any | null>(null);
 

@@ -4,13 +4,12 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { auth } from "../../utils/firebase/firebase";
 import { routes } from "../../utils/routes";
-import { addplace, getBoxes } from "../../utils/firebase/firestore";
 const Home = () => {
   const navigate = useNavigate();
   useEffect(() => {

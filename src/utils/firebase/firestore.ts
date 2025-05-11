@@ -1,6 +1,6 @@
-import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
-import { db } from "./firebase";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { mergeBoxesByPlace } from "../boxes";
+import { db } from "./firebase";
 
 export const addplace = async (uid: string, place: Place) => {
   try {

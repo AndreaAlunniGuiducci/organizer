@@ -2,15 +2,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Formik } from "formik";
 import { toPng } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
-import { Button, Card, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import QRCode from "react-qr-code";
-import * as yup from "yup";
-import { uploadToImgBB } from "../../utils/uploadImage";
-import styles from "./newList.module.scss";
 import { useLocation } from "react-router-dom";
-import { getUserId } from "../../utils/user";
-import { addplace } from "../../utils/firebase/firestore";
+import * as yup from "yup";
 import ObjCard from "../../components/molecules/objCard/objCard";
+import { addplace } from "../../utils/firebase/firestore";
+import { uploadToImgBB } from "../../utils/uploadImage";
+import { getUserId } from "../../utils/user";
+import styles from "./newList.module.scss";
 
 const NewList = () => {
   const location = useLocation();
@@ -206,32 +206,8 @@ const NewList = () => {
 
       <div className="cardContainer">
         {formValue &&
-          formValue.map((item, index) => (
-            // <>
-            //   <Card key={index} style={{ width: "18rem" }}>
-            //     <Card.Img
-            //       variant="top"
-            //       src={item.objectImageUrl}
-            //       alt={item.objectName}
-            //     />
-            //     <Card.Body className="cardText">
-            //       <Button
-            //         variant="danger"
-            //         className="cardButton"
-            //         onClick={() => deleteObject(item.id)}
-            //       >
-            //         X
-            //       </Button>
-            //       <Card.Title>{item.objectName}</Card.Title>
-            //       <Card.Text>
-            //         {item.objectType === "other"
-            //           ? item.objectCustomType
-            //           : item.objectType}
-            //       </Card.Text>
-            //     </Card.Body>
-            //   </Card>
-            // </>
-            <ObjCard item={item} deleteObject={deleteObject} />
+          formValue.map((item) => (
+            <ObjCard key={item.id} item={item} deleteObject={deleteObject} />
           ))}
       </div>
 

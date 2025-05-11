@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import ObjCard from "../../components/molecules/objCard/objCard";
 import { getBoxes } from "../../utils/firebase/firestore";
 import { getUserId } from "../../utils/user";
 import styles from "./list.module.scss";
-import ObjCard from "../../components/molecules/objCard/objCard";
 
 const List = () => {
   const [list, setList] = useState<Place[] | undefined>();

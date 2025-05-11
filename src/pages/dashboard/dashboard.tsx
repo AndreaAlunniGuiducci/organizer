@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { Button, InputGroup } from "react-bootstrap";
-import { addplace, getBoxes } from "../../utils/firebase/firestore";
-import { getUserId } from "../../utils/user";
-import styles from "./dashboard.module.scss";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../utils/routes";
-import { mergeBoxesByPlace } from "../../utils/boxes";
+import styles from "./dashboard.module.scss";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -34,7 +31,7 @@ const Dashboard = () => {
             }}
           />
           <Button
-            onClick={(e) => {
+            onClick={() => {
               if (!place) return;
               navigate(routes.nameList, { state: { place } });
             }}
