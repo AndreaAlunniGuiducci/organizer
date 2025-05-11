@@ -18,7 +18,7 @@ const Header = () => {
     <div className={styles.header}>
       <div className={styles.leftPart}>
         <div className={styles.logo}>
-          <img className={styles.logo} src="/organizer.png" alt="Logo" />
+          <img className={styles.logo} src="/organizer/organizer.png" alt="Logo" />
         </div>
         <div className={styles.title}>Organizer</div>
       </div>
