@@ -11,6 +11,7 @@ import { addplace } from "../../utils/firebase/firestore";
 import { uploadToImgBB } from "../../utils/uploadImage";
 import { getUserId } from "../../utils/user";
 import styles from "./newList.module.scss";
+import { routes } from "../../utils/routes";
 
 const NewList = () => {
   const location = useLocation();
@@ -67,6 +68,7 @@ const NewList = () => {
     if (formValue) {
       const qrCodeData = formValue.map((item) => {
         return {
+          boxName,
           objectName: item.objectName,
           objectType: item.objectType,
           objectCustomType: item.objectCustomType,
@@ -76,7 +78,12 @@ const NewList = () => {
       const objectToString = JSON.stringify(qrCodeData);
       const objectToBase64 = btoa(objectToString);
       const urlList =
-        import.meta.env.VITE_BASE_URL + "#/list/" + objectToBase64;
+        import.meta.env.VITE_BASE_URL +
+        "#" +
+        routes.list +
+        "/" +
+        objectToBase64;
+      console.log("urlList", urlList);
       setQrCodeValue(urlList);
     } else {
       setQrCodeValue(undefined);
