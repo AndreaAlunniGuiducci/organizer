@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./header.module.scss";
-
+import { X, XCircle } from "react-bootstrap-icons";
 const Header = () => {
   const [user, setUser] = useState<any | null>(null);
 
@@ -18,17 +18,22 @@ const Header = () => {
     <div className={styles.header}>
       <div className={styles.leftPart}>
         <div className={styles.logo}>
-          <img
-            className={styles.logo}
-            src="/organizer.png"
-            alt="Logo"
-          />
+          <img className={styles.logo} src="/organizer.png" alt="Logo" />
         </div>
         <div className={styles.title}>Organizer</div>
       </div>
       <div className={styles.rigthPart}>
         {user ? (
-          <div className={styles.user}>{user.displayName}</div>
+          <div className={styles.userContainer}>
+            <div className={styles.user}>{user.displayName}</div>
+            <XCircle
+              className={styles.logout}
+              onClick={() => {
+                localStorage.removeItem("user");
+                window.location.reload();
+              }}
+            />
+          </div>
         ) : (
           <div className={styles.login}>Login</div>
         )}

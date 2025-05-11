@@ -1,18 +1,27 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useEffect, useState } from "react";
 import { Outlet, RouterProvider, createHashRouter } from "react-router-dom";
 import "./App.css";
+import Header from "./components/molecules/header/header";
+import ProtectedRoute from "./components/molecules/protectedRoute/protectedRoute";
+import Dashboard from "./pages/dashboard/dashboard";
 import Home from "./pages/home/home";
-import List from "./pages/list/list";
+import BoxName from "./pages/nameList/boxName";
 import NewList from "./pages/newList/newList";
 import { routes } from "./utils/routes";
-import Header from "./components/molecules/header/header";
-import BoxName from "./pages/nameList/boxName";
-import Dashboard from "./pages/dashboard/dashboard";
-import ProtectedRoute from "./components/molecules/protectedRoute/protectedRoute";
+import QrList from "./pages/qrList/qrList";
+import List from "./pages/list/list";
 
 function App() {
-  const isLoggedIn = window.localStorage.getItem("user") !== null;
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const user = window.localStorage.getItem("user");
+    if (user) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
   const router = createHashRouter([
     {
       path: "/",
@@ -50,6 +59,14 @@ function App() {
           element: (
             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <NewList />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: routes.qrList,
+          element: (
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <QrList />
             </ProtectedRoute>
           ),
         },

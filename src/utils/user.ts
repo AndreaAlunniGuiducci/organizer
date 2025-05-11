@@ -6,3 +6,9 @@ export const isUserLoggedIn = (): boolean => {
     return false;
   }
 };
+
+export const getUserId = (): string => {
+  const user = window.localStorage.getItem("user");
+  const userId = user ? JSON.parse(user).uid : "";
+  return userId;
+};

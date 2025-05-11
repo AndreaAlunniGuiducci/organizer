@@ -8,10 +8,16 @@ import * as yup from "yup";
 import { uploadToImgBB } from "../../utils/uploadImage";
 import styles from "./newList.module.scss";
 import { useLocation } from "react-router-dom";
+import { getUserId } from "../../utils/user";
+import { addplace } from "../../utils/firebase/firestore";
+import ObjCard from "../../components/molecules/objCard/objCard";
 
 const NewList = () => {
   const location = useLocation();
-  const { boxName } = location.state as { boxName: string };
+  const { boxName, place } = location.state as {
+    boxName: string;
+    place: string;
+  };
   const [qrCodeValue, setQrCodeValue] = useState<string | undefined>();
   const [formValue, setFormValue] = useState<BoxContent[] | undefined>();
 
@@ -30,6 +36,22 @@ const NewList = () => {
       .catch((err) => {
         console.error("Errore durante il download:", err);
       });
+  };
+
+  const handleSaveData = async () => {
+    if (formValue) {
+      const userId = getUserId();
+      await addplace(userId, {
+        place,
+        boxes: [
+          {
+            box_name: boxName,
+            box_content: formValue,
+          },
+        ],
+      });
+      handleDownload();
+    }
   };
 
   const deleteObject = (id: number) => {
@@ -63,6 +85,9 @@ const NewList = () => {
 
   return (
     <div className={styles.newList}>
+      <h3>
+        Lista per contenitore {boxName} in {place}
+      </h3>
       <Formik
         initialValues={{
           objectName: "",
@@ -139,9 +164,9 @@ const NewList = () => {
                 isInvalid={touched.objectType && !!errors.objectType}
               >
                 <option value="">Seleziona una tipologia</option>
-                <option value="dress">Vestiti</option>
-                <option value="game">Giochi</option>
-                <option value="hardware">Ferramenta</option>
+                <option value="vestiti">Vestiti</option>
+                <option value="giochi">Giochi</option>
+                <option value="ferramenta">Ferramenta</option>
                 <option value="other">Altro...</option>
               </Form.Select>
               {values.objectType === "other" && (
@@ -182,30 +207,31 @@ const NewList = () => {
       <div className="cardContainer">
         {formValue &&
           formValue.map((item, index) => (
-            <>
-              <Card key={index} style={{ width: "18rem" }}>
-                <Card.Img
-                  variant="top"
-                  src={item.objectImageUrl}
-                  alt={item.objectName}
-                />
-                <Card.Body className="cardText">
-                  <Button
-                    variant="danger"
-                    className="cardButton"
-                    onClick={() => deleteObject(item.id)}
-                  >
-                    X
-                  </Button>
-                  <Card.Title>{item.objectName}</Card.Title>
-                  <Card.Text>
-                    {item.objectType === "other"
-                      ? item.objectCustomType
-                      : item.objectType}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </>
+            // <>
+            //   <Card key={index} style={{ width: "18rem" }}>
+            //     <Card.Img
+            //       variant="top"
+            //       src={item.objectImageUrl}
+            //       alt={item.objectName}
+            //     />
+            //     <Card.Body className="cardText">
+            //       <Button
+            //         variant="danger"
+            //         className="cardButton"
+            //         onClick={() => deleteObject(item.id)}
+            //       >
+            //         X
+            //       </Button>
+            //       <Card.Title>{item.objectName}</Card.Title>
+            //       <Card.Text>
+            //         {item.objectType === "other"
+            //           ? item.objectCustomType
+            //           : item.objectType}
+            //       </Card.Text>
+            //     </Card.Body>
+            //   </Card>
+            // </>
+            <ObjCard item={item} deleteObject={deleteObject} />
           ))}
       </div>
 
@@ -215,7 +241,10 @@ const NewList = () => {
             <QRCode value={qrCodeValue} />
             <h3 className={styles.listName}>{boxName}</h3>
           </div>
-          <Button onClick={handleDownload}>Scarica QR Code</Button>
+          <div className={styles.ctaContainer}>
+            <Button onClick={handleDownload}>Scarica QR Code</Button>
+            <Button onClick={handleSaveData}>Salva dati</Button>
+          </div>
         </>
       )}
     </div>

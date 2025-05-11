@@ -1,31 +1,39 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { getBoxes } from "../../utils/firebase/firestore";
+import { getUserId } from "../../utils/user";
+import styles from "./list.module.scss";
+import ObjCard from "../../components/molecules/objCard/objCard";
 
 const List = () => {
-  const { qrCode } = useParams();
-
-  const [qrCodeValue, setQrCodeValue] = useState<any[] | undefined>(undefined);
-
+  const [list, setList] = useState<Place[] | undefined>();
   useEffect(() => {
-    if (qrCode) {
-      const decodedData = atob(qrCode);
-      const parsedData = JSON.parse(decodedData);
-      setQrCodeValue(parsedData);
-    } else {
-      setQrCodeValue(undefined);
-    }
-  }, [qrCode]);
+    const userId = getUserId();
+    getBoxes(userId).then((data) => {
+      setList(data);
+    });
+  }, []);
 
   return (
-    <div>
-      {qrCodeValue?.map((i) => (
-        <>
-          <div>{i.objectName}</div>
-          <div>{i.objectType}</div>
-        </>
-      ))}
+    <div className={styles.list}>
+      <h1>Lista</h1>
+      <div className={styles.placeContainer}>
+        {list?.map((place) => (
+          <div key={place.place}>
+            <h2>{place.place}</h2>
+            {place.boxes.map((box) => (
+              <div key={box.box_name}>
+                <h3 className={styles.boxName}>{box.box_name}</h3>
+                <div className={styles.boxContent}>
+                  {box.box_content.map((content) => (
+                    <ObjCard item={content} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
-
 export default List;
