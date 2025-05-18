@@ -15,4 +15,15 @@
     padding: 1rem;
     background-color: white;
   }
+  .sectionDescription {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    .inputGroup {
+      flex-wrap: nowrap;
+      input {
+        width: 100%;
+      }
+    }
+  }
 }

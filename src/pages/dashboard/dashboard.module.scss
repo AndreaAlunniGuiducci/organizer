@@ -1,0 +1,15 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    .sectionDescription {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+}

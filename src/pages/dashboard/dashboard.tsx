@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button, InputGroup } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { routes } from "../../utils/routes";
 import styles from "./dashboard.module.scss";
+import Divider from "../../components/atoms/divider/divider";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,77 +14,51 @@ const Dashboard = () => {
     const userId = parsedUser?.uid;
     if (!userId) {
       console.log("User not logged in");
-      navigate('/');
+      navigate("/");
     }
   }, []);
 
   return (
     <div className={styles.dashboard}>
       <h1>Dashboard</h1>
-      {/* <div className={styles.placesContainer}>
-        <h3>I tuoi luoghi</h3>
-      </div> */}
-      <div className={styles.ctaContainer}>
+      <div className={styles.section}>
         <h3>Nuovo luogo</h3>
-        <p>Per iniziare seleziona il luogo dove si trova il contenitore</p>
-        <InputGroup>
-          <input
-            type="text"
-            value={place}
-            onChange={(e) => setPlace(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                if (place) {
-                  navigate(routes.nameList, { state: { place } });
+        <div className={styles.sectionDescription}>
+          <p>Per iniziare seleziona il luogo dove si trova il contenitore</p>
+          <InputGroup>
+            <input
+              type="text"
+              value={place}
+              onChange={(e) => setPlace(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (place) {
+                    navigate(routes.nameList, { state: { place } });
+                  }
                 }
-              }
-            }}
-          />
-          <Button
-            onClick={() => {
-              if (!place) return;
-              navigate(routes.nameList, { state: { place } });
-            }}
-          >
-            Avanti
-          </Button>
-        </InputGroup>
+              }}
+            />
+            <Button
+              onClick={() => {
+                if (!place) return;
+                navigate(routes.nameList, { state: { place } });
+              }}
+            >
+              Avanti
+            </Button>
+          </InputGroup>
+        </div>
       </div>
-
-      {/* <Button
-        onClick={() => {
-          const userId = getUserId();
-          addplace(userId, {
-            place: "stanzino",
-            boxes: [
-              {
-                box_name: "box3",
-                box_content: [
-                  {
-                    id: 1,
-                    objectName: "Nome oggetto",
-                    objectType: "Tipo oggetto",
-                    objectCustomType: "",
-                    objectImage: null,
-                    objectImageUrl: "",
-                  },
-                ],
-              },
-            ],
-          });
-        }}
-      >
-        ADD PLACES
-      </Button>
-      <Button
-        onClick={async () => {
-          const userId = getUserId();
-          const boxes = await getBoxes(userId);
-          console.log("boxes", boxes);
-        }}
-      >
-        GET PLACES
-      </Button>*/}
+      <Divider />
+      <div className={styles.section}>
+        <h3>I miei contenitori</h3>
+        <div className={styles.sectionDescription}>
+          <p>Guarda la lista dei tuoi contenitori</p>
+          <Link to={routes.list}>
+            <Button>I miei luoghi</Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
