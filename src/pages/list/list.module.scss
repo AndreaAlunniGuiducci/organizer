@@ -1,5 +1,27 @@
 .list {
+  .titleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  .searchContainer {
+    max-height: 300px;
+    opacity: 1;
+    transition: max-height 0.5s ease-in, opacity 1.5s;
+    &.searchClosed {
+    transition: max-height 0.5s ease-in, opacity 0.75s;
+      max-height: 0;
+      opacity: 0;
+    }
+  }
   .placeContainer {
+    z-index: 9;
+    background-color: #ffffff;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -20,7 +42,7 @@
         border: 0;
         width: calc(100% - 32px);
         > * {
-            margin: 0 auto;
+          margin: 0 auto;
           margin-bottom: 12px;
         }
       }

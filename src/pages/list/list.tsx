@@ -3,14 +3,31 @@ import ObjCard from "../../components/molecules/objCard/objCard";
 import { getBoxes } from "../../utils/firebase/firestore";
 import { getUserId } from "../../utils/user";
 import styles from "./list.module.scss";
-import { Button, Dropdown, InputGroup } from "react-bootstrap";
+import { Button, Dropdown, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../utils/routes";
+import { Search } from "react-bootstrap-icons";
 
 const List = () => {
+  const navigate = useNavigate();
+
   const [list, setList] = useState<Place[] | undefined>();
   const [place, setPlace] = useState<string>("");
-  const navigate = useNavigate();
+  const [searchValues, setSearchValues] = useState<{
+    name: string;
+    type: string;
+    customType: string;
+  }>({
+    name: "",
+    type: "",
+    customType: "",
+  });
+  const [searchIsOpen, setSearchIsOpen] = useState<boolean>(false);
+
+  const submitSearch = () => {
+    
+  };
+
   useEffect(() => {
     const userId = getUserId();
     getBoxes(userId).then((data) => {
@@ -20,7 +37,59 @@ const List = () => {
 
   return (
     <div className={styles.list}>
-      <h1>Lista</h1>
+      <div className={styles.titleContainer}>
+        <h1>Lista</h1>
+        <Search
+          className={styles.icon}
+          onClick={() => setSearchIsOpen(!searchIsOpen)}
+        />
+      </div>
+      <div
+        className={`${styles.searchContainer} ${
+          searchIsOpen ? "" : styles.searchClosed
+        }`}
+      >
+        <Form onSubmit={submitSearch}>
+          <Form.Group>
+            <Form.Label>Nome</Form.Label>
+            <Form.Control
+              type="text"
+              value={searchValues.name}
+              onChange={(e) =>
+                setSearchValues({ ...searchValues, name: e.target.value })
+              }
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Tipologia</Form.Label>
+            <Form.Select
+              value={searchValues.type}
+              onChange={(e) =>
+                setSearchValues({ ...searchValues, type: e.target.value })
+              }
+            >
+              <option value="">Seleziona una tipologia</option>
+              <option value="vestiti">Vestiti</option>
+              <option value="giochi">Giochi</option>
+              <option value="ferramenta">Ferramenta</option>
+              <option value="other">Altro...</option>
+            </Form.Select>
+            {searchValues.type === "other" && (
+              <Form.Control
+                type="text"
+                value={searchValues.customType}
+                onChange={(e) =>
+                  setSearchValues({
+                    ...searchValues,
+                    customType: e.target.value,
+                  })
+                }
+              />
+            )}
+          </Form.Group>
+          <Button type="submit">Cerca</Button>
+        </Form>
+      </div>
       {list && list.length > 0 ? (
         <div className={styles.placeContainer}>
           {list?.map((place) => (
@@ -46,19 +115,6 @@ const List = () => {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            // <div key={place.place}>
-            //   <h2>{place.place}</h2>
-            //   {place.boxes.map((box) => (
-            //     <div key={box.box_name}>
-            //       <h3 className={styles.boxName}>{box.box_name}</h3>
-            //       <div className={styles.boxContent}>
-            //         {box.box_content.map((content) => (
-            //           <ObjCard item={content} />
-            //         ))}
-            //       </div>
-            //     </div>
-            //   ))}
-            // </div>
           ))}
         </div>
       ) : (
