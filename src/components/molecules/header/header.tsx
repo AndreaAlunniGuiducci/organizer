@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { XCircle } from "react-bootstrap-icons";
+import { XCircle, Justify, XLg } from "react-bootstrap-icons";
 import styles from "./header.module.scss";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { routes } from "../../../utils/routes";
 const Header = () => {
-  const location = useLocation()
+  const location = useLocation();
+
   const [user, setUser] = useState<any | null>(null);
+  const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
+
   const localUser = localStorage.getItem("user");
-  
+
   useEffect(() => {
     console.log("localUser", localUser);
     if (localUser) {
@@ -14,6 +18,7 @@ const Header = () => {
     } else {
       setUser(null);
     }
+    setMenuIsOpen(false);
   }, [location]);
 
   return (
@@ -39,6 +44,30 @@ const Header = () => {
                 window.location.reload();
               }}
             />
+            <Justify
+              className={styles.hamburger}
+              onClick={() => setMenuIsOpen(true)}
+            />
+            <div
+              className={styles.mobileMenu}
+              style={{ top: menuIsOpen ? 0 : "-100%" }}
+            >
+              <XLg
+                className={styles.closeMenu}
+                onClick={() => setMenuIsOpen(false)}
+              />
+              <ul>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to={routes.dashboard}>Dashboard</Link>
+                </li>
+                <li>
+                  <Link to={routes.list}>Lista</Link>
+                </li>
+              </ul>
+            </div>
           </div>
         ) : (
           <div className={styles.login}>Login</div>
