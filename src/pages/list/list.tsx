@@ -3,7 +3,7 @@ import ObjCard from "../../components/molecules/objCard/objCard";
 import { getBoxes } from "../../utils/firebase/firestore";
 import { getUserId } from "../../utils/user";
 import styles from "./list.module.scss";
-import { Button, InputGroup } from "react-bootstrap";
+import { Button, Dropdown, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../utils/routes";
 
@@ -24,19 +24,41 @@ const List = () => {
       {list && list.length > 0 ? (
         <div className={styles.placeContainer}>
           {list?.map((place) => (
-            <div key={place.place}>
-              <h2>{place.place}</h2>
-              {place.boxes.map((box) => (
-                <div key={box.box_name}>
-                  <h3 className={styles.boxName}>{box.box_name}</h3>
-                  <div className={styles.boxContent}>
-                    {box.box_content.map((content) => (
-                      <ObjCard item={content} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <Dropdown key={place.place} className={styles.dropPlace}>
+              <Dropdown.Toggle>
+                <h2>{place.place}</h2>
+              </Dropdown.Toggle>
+              <Dropdown.Menu className={styles.dropBox}>
+                {place.boxes.map((box) => (
+                  <Dropdown className={styles.boxContent} key={box.box_name}>
+                    <Dropdown.Toggle>
+                      <h3 className={styles.boxName}>{box.box_name}</h3>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu
+                      key={box.box_name}
+                      className={styles.dropObj}
+                    >
+                      {box.box_content.map((content) => (
+                        <ObjCard item={content} key={content.id} />
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+            // <div key={place.place}>
+            //   <h2>{place.place}</h2>
+            //   {place.boxes.map((box) => (
+            //     <div key={box.box_name}>
+            //       <h3 className={styles.boxName}>{box.box_name}</h3>
+            //       <div className={styles.boxContent}>
+            //         {box.box_content.map((content) => (
+            //           <ObjCard item={content} />
+            //         ))}
+            //       </div>
+            //     </div>
+            //   ))}
+            // </div>
           ))}
         </div>
       ) : (
