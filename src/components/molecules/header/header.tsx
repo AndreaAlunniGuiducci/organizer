@@ -50,7 +50,7 @@ const Header = () => {
             />
             <div
               className={styles.mobileMenu}
-              style={{ top: menuIsOpen ? 0 : "-100%" }}
+              style={{ top: menuIsOpen ? 0 : "-100vh" }}
             >
               <XLg
                 className={styles.closeMenu}
