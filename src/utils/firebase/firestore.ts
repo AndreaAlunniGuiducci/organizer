@@ -1,4 +1,11 @@
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  or,
+  query,
+  where,
+} from "firebase/firestore";
 import { mergeBoxesByPlace } from "../boxes";
 import { db } from "./firebase";
 
@@ -22,3 +29,4 @@ export const getBoxes = async (uid: string) => {
     console.error("Error getting documents: ", error);
   }
 };
+

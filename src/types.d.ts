@@ -7,6 +7,12 @@ declare interface BoxContent {
   objectImageUrl: string;
 }
 
+declare interface FilterObj {
+  name: string;
+  type: string;
+  customType: string;
+}
+
 declare interface Box {
   box_name: string;
   box_content: BoxContent[];

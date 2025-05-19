@@ -1,38 +1,72 @@
 import { useEffect, useState } from "react";
+import { Button, Dropdown, Form, InputGroup } from "react-bootstrap";
+import { Search } from "react-bootstrap-icons";
+import { useNavigate } from "react-router-dom";
 import ObjCard from "../../components/molecules/objCard/objCard";
 import { getBoxes } from "../../utils/firebase/firestore";
+import { routes } from "../../utils/routes";
 import { getUserId } from "../../utils/user";
 import styles from "./list.module.scss";
-import { Button, Dropdown, Form, InputGroup } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { routes } from "../../utils/routes";
-import { Search } from "react-bootstrap-icons";
 
 const List = () => {
   const navigate = useNavigate();
 
   const [list, setList] = useState<Place[] | undefined>();
   const [place, setPlace] = useState<string>("");
-  const [searchValues, setSearchValues] = useState<{
-    name: string;
-    type: string;
-    customType: string;
-  }>({
+  const [searchValues, setSearchValues] = useState<FilterObj>({
     name: "",
     type: "",
     customType: "",
   });
   const [searchIsOpen, setSearchIsOpen] = useState<boolean>(false);
 
-  const submitSearch = () => {
-    
+  const submitSearch = async () => {
+    const allList = await getAllList();
+    const filteredObj = allList
+      ?.map((i) => {
+        const boxesByType =
+          searchValues.type || searchValues.customType
+            ? i.boxes.map((b) => ({
+                ...b,
+                box_content: b.box_content.filter((o) => {
+                  if (searchValues.customType) {
+                    return o.objectCustomType
+                      .toLowerCase()
+                      .includes(searchValues.customType.toLowerCase().trim());
+                  }
+                  return o.objectType === searchValues.type;
+                }),
+              }))
+            : i.boxes;
+        const boxesByName = searchValues.name
+          ? boxesByType.map((b) => ({
+              ...b,
+              box_content: b.box_content.filter((o) =>
+                o.objectName
+                  .toLowerCase()
+                  .includes(searchValues.name.toLowerCase().trim())
+              ),
+            }))
+          : boxesByType;
+
+        const cleanList = boxesByName.filter((b) => b.box_content.length > 0);
+        return cleanList.length > 0
+          ? { place: i.place, boxes: cleanList }
+          : null;
+      })
+      .filter((i) => i !== null);
+
+    setList(filteredObj);
+  };
+
+  const getAllList = async () => {
+    const userId = getUserId();
+    const list = await getBoxes(userId);
+    return list;
   };
 
   useEffect(() => {
-    const userId = getUserId();
-    getBoxes(userId).then((data) => {
-      setList(data);
-    });
+    getAllList().then((data) => setList(data));
   }, []);
 
   return (
@@ -56,7 +90,10 @@ const List = () => {
               type="text"
               value={searchValues.name}
               onChange={(e) =>
-                setSearchValues({ ...searchValues, name: e.target.value })
+                setSearchValues({
+                  ...searchValues,
+                  name: e.target.value,
+                })
               }
             />
           </Form.Group>
@@ -65,7 +102,10 @@ const List = () => {
             <Form.Select
               value={searchValues.type}
               onChange={(e) =>
-                setSearchValues({ ...searchValues, type: e.target.value })
+                setSearchValues({
+                  ...searchValues,
+                  type: e.target.value,
+                })
               }
             >
               <option value="">Seleziona una tipologia</option>
@@ -88,6 +128,14 @@ const List = () => {
             )}
           </Form.Group>
           <Button type="submit">Cerca</Button>
+          <Button
+            onClick={async () => {
+              const allList = await getAllList();
+              setList(allList);
+            }}
+          >
+            Cancella Filtri
+          </Button>
         </Form>
       </div>
       {list && list.length > 0 ? (
